@@ -252,13 +252,18 @@ def main():
                         required=True)
     parser.add_argument('--data_seed',
                         type=str,
-                        help='Data split you want to run the experiment on')
+                        help='Data split you want to run the experiment on',
+                        choices=['0', '1', '2', 'all'],
+                        required=True)
     parser.add_argument('--model_seed',
                         type=str,
-                        help='Seed for your model')
+                        help='Seed for your model',
+                        required=True)
     parser.add_argument('--prune',
                         type=str,
-                        help='Pruning level')
+                        help='Pruning level',
+                        choices=['-1', '0', '1', 'all'],
+                        required=True)
     parser.add_argument('--batch_size',
                         type=int,
                         default=64,
