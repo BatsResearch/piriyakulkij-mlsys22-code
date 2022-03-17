@@ -81,7 +81,7 @@ Here are the descriptions of the arguments:
 
 `--dataset_dir`: Path to the directory containing the chosen dataset
 
-`--scads_root_path`: Root path of the images in your SCADS (Path to the directory containing the images in SCADS)
+`--scads_root_path`: Root path of the images in your SCADS (This should be path to your ImageNet-21k directory)
 
 `--data_seed`: Data split you want to run the experiment on 
 (If `all` is input, the experiments for split 0, 1, and 2 will all be run)
