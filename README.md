@@ -46,6 +46,10 @@ Our experiments depend on four different datasets that you will need to download
 
 ## Running the experiments
 
+We recommend using 4 or more gpus to run the experiments. 
+
+First, 
+
 ## Citation
 
 Please cite the following paper if you are using our framework :)
