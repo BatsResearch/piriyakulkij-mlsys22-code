@@ -80,9 +80,8 @@ class DatasetAPI:
         img_paths = []
         labels = []
         for i in range(len(self.classes)):
-            checkpoint_indices = self.train_indices[i][:shot]
-            img_paths.append(self.all_img_paths[i][checkpoint_indices])
-            labels = labels + ([i] * len(checkpoint_indices))
+            img_paths.append(self.train_img_paths[i][:shot])
+            labels = labels + ([i] * len(self.train_img_paths[i][:shot]))
         img_paths = np.concatenate(img_paths)
         labels = np.asarray(labels)
     
@@ -109,8 +108,7 @@ class DatasetAPI:
         shot = self.checkpoint_shot[checkpoint_num]
         img_paths = []
         for i in range(len(self.classes)):
-            checkpoint_indices = self.train_indices[i][shot:]
-            img_paths.append(self.all_img_paths[i][checkpoint_indices])
+            img_paths.append(self.train_img_paths[i][shot:])
         img_paths = np.concatenate(img_paths)
     
         unlabeled_train_dataset = CustomImageDataset(img_paths,
@@ -123,8 +121,7 @@ class DatasetAPI:
         shot = self.checkpoint_shot[checkpoint_num]
         labels = []
         for i in range(len(self.classes)):
-            checkpoint_indices = self.train_indices[i][shot:]
-            labels = labels + ([i] * len(checkpoint_indices))
+            labels = labels + ([i] * len(self.train_img_paths[i][shot:]))
         labels = np.asarray(labels)
         return labels
 
