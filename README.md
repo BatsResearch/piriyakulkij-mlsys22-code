@@ -48,7 +48,54 @@ Our experiments depend on four different datasets that you will need to download
 
 We recommend using 4 or more gpus to run the experiments. 
 
-First, 
+First, in the config file `acclerate_config.yml`, make sure `num_processes` match the number of gpus you are using:
+```yml
+compute_environment: LOCAL_MACHINE
+distributed_type: MULTI_GPU
+fp16: false
+machine_rank: 0
+main_process_ip: null
+main_process_port: null
+main_training_function: main
+num_machines: 1
+num_processes: 4 # set this number to the number of gpus
+```
+
+Then, you can run the experiments using the following script:
+```
+accelerate launch --config_file accelerate_config.yml run_semi.py \ 
+    --dataset DATASET \
+    --dataset_dir PATH_TO_YOUR_DATASET \
+    --scads_root_path ROOT_PATH_OF_YOUR_SCADS \
+    --data_seed DATA_SPLIT \
+    --model_seed MODEL_SEED \
+    --prune PRUNING_LEVEL \
+    --model_type MODEL_TYPE \
+    --batch_size BATCH_SIZE
+```
+
+Here are the descriptions of the arguments:
+
+`--dataset`: Name of the dataset you want to run the experiment on `['fmd', 'office_home-product', 'office_home-clipart',
+                                 'grocery-coarse']`
+
+`--dataset_dir`: Path to the directory containing the chosen dataset
+
+`--scads_root_path`: Root path of the images in your SCADS (Path to the directory containing the images in SCADS)
+
+`--data_seed`: Data split you want to run the experiment on 
+(If `all` is input, the experiments for split 0, 1, and 2 will all be run)
+
+`--model_seed`: Seed for your model
+(If `all` is input, the experiments for seed 0, 1, and 2 will all be run)
+
+`--prune`: Pruning level (Please specify -1 for no pruning)
+(If `all` is input, the experiments for pruning level -1, 0, and 1 will all be run)
+
+`--model_type`: Name of your backbone `['resnet50', 'bigtransfer']`
+
+`--batch_size`: Batch size per gpu (your actual size batch size will be this multiplied by number of gpus
+
 
 ## Citation
 
