@@ -21,8 +21,7 @@ from taglets.scads import Scads
 from taglets.labelmodel import AMCLLogReg, AMCLWeightedVote, WeightedVote, UnweightedVote, NaiveBayes
 from taglets.pipeline import Cache
 
-from .dataset_api import FMD, OfficeHomeProduct, OfficeHomeClipart, GroceryStoreFineGrained, \
-    GroceryStoreCoarseGrained
+from .dataset_api import FMD, OfficeHomeProduct, OfficeHomeClipart, GroceryStoreCoarseGrained
 from .models import KNOWN_MODELS
 
 
@@ -45,8 +44,7 @@ class CheckpointRunner:
         dataset_dict = {'fmd': FMD,
                         'office_home-product': OfficeHomeProduct,
                         'office_home-clipart': OfficeHomeClipart,
-                        'grocery-coarse': GroceryStoreCoarseGrained,
-                        'grocery-fine': GroceryStoreFineGrained}
+                        'grocery-coarse': GroceryStoreCoarseGrained}
         self.dataset_api = dataset_dict[dataset](dataset_dir, data_seed)
 
         if self.model_type == 'resnet50':
@@ -239,33 +237,44 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset',
                         type=str,
-                        default='fmd',
                         choices=['fmd', 'office_home-product', 'office_home-clipart',
-                                 'grocery-coarse', 'grocery-fine'])
+                                 'grocery-coarse'],
+                        help='Name of the dataset you want to run the experiment on',
+                        required=True)
     parser.add_argument('--dataset_dir',
                         type=str,
                         default='true',
-                        help='Option to choose whether to execute or not the entire trining pipeline')
+                        help='Path to the directory containing the chosen dataset',
+                        required=True)
+    parser.add_argument('--scads_root_path',
+                        type=str,
+                        help='Root path of the images in your SCADS',
+                        required=True)
+    parser.add_argument('--data_seed',
+                        type=str,
+                        help='Data split you want to run the experiment on')
+    parser.add_argument('--model_seed',
+                        type=str,
+                        help='Seed for your model')
+    parser.add_argument('--prune',
+                        type=str,
+                        help='Pruning level')
     parser.add_argument('--batch_size',
                         type=int,
-                        default='32',
-                        help='Universal batch size')
-    parser.add_argument('--data_seed', type=str)
-    parser.add_argument('--prune', type=str)
-    parser.add_argument('--model_seed', type=str)
-    parser.add_argument('--scads_root_path', 
+                        default=64,
+                        help='Batch size per gpu (your actual size batch size will be this multiplied by number of gpus')
+    parser.add_argument('--model_type',
                         type=str,
-                        default='/users/wpiriyak/data/bats/datasets')
+                        default='resnet50',
+                        help='Name of your backbone',
+                        choices=['resnet50', 'bigtransfer'])
+    
     parser.add_argument('--save_votes_path',
                         type=str)
     parser.add_argument('--load_votes_path',
                         type=str)
     parser.add_argument('--labelmodel_type',
                         type=str)
-    parser.add_argument('--model_type',
-                        type=str,
-                        default='resnet50',
-                        choices=['resnet50', 'bigtransfer'])
     args = parser.parse_args()
 
     Scads.set_root_path(args.scads_root_path)
