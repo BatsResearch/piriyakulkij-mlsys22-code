@@ -1,4 +1,6 @@
+import csv
 import numpy as np
+import os
 import random
 import torchvision.transforms as transforms
 
@@ -6,9 +8,40 @@ from taglets.data import CustomImageDataset
 
 
 class DatasetAPI:
-    def __init__(self, dataset_dir, seed=0):
+    def __init__(self, dataset_name, dataset_dir, seed=0):
+        self.dataset_name = dataset_name
         self.dataset_dir = dataset_dir
         self.seed = seed
+
+        dir = os.path.dirname(__file__)
+        dataset_splits_dir = os.path.join(dir, '..', '..', '..', 'dataset_splits')
+
+        self.classes = []
+        with open(os.path.join(dataset_splits_dir, f'{dataset_name}-classes.csv')) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=' ')
+            for row in csv_reader:
+                self.classes.append(row[0])
+        self.classes = np.asarray(self.classes)
+
+        self.train_img_paths = []
+        for i in range(len(self.classes)):
+            self.train_img_paths.append([])
+        with open(os.path.join(dataset_splits_dir, f'{dataset_name}-train-split{self.seed}.csv')) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=' ')
+            for row in csv_reader:
+                self.train_img_paths[int(row[1])].append(os.path.join(self.dataset_dir, row[0]))
+        for i in range(len(self.classes)):
+            self.train_img_paths[i] = np.asarray(self.train_img_paths[i])
+
+        self.test_img_paths = []
+        self.test_labels = []
+        with open(os.path.join(dataset_splits_dir, f'{dataset_name}-test-split{self.seed}.csv')) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=' ')
+            for row in csv_reader:
+                self.test_img_paths.append(os.path.join(self.dataset_dir, row[0]))
+                self.test_labels.append(int(row[1]))
+        self.test_img_paths = np.asarray(self.test_img_paths)
+        self.test_labels = np.asarray(self.test_labels)
     
     def _get_transform_image(self, train=True):
         """
